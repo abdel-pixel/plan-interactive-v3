@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan Interactif - Gare de Strasbourg</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; text-align: center; }
+        #map { height: 70vh; width: 100%; margin: 10px auto; border-radius: 8px; }
+        .controls { padding: 10px; margin: 10px auto; display: flex; justify-content: center; gap: 10px; }
+        button { padding: 10px; border: none; border-radius: 5px; cursor: pointer; background: #007bff; color: white; }
+        button:hover { background: #0056b3; }
+        #qrCodeContainer { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h2>Plan Interactif - Gare de Strasbourg</h2>
+    <div class="controls">
+        <button onclick="enableAdding()">Ajouter un Point</button>
+        <button onclick="clearAllMarkers()">Effacer les Points</button>
+    </div>
+    <div id="map"></div>
+
+    <!-- Ajout du QR Code -->
+    <div id="qrCodeContainer">
+        <h3>Partager ce plan</h3>
+        <div id="qrcode"></div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        var map = L.map('map').setView([48.5846, 7.7348], 16);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        var markers = [];
+
+        function enableAdding() {
+            map.once('click', function(e) {
+                var marker = L.marker(e.latlng).addTo(map).bindPopup("Nouveau point ajouté !");
+                markers.push(marker);
+            });
+        }
+
+        function clearAllMarkers() {
+            markers.forEach(marker => map.removeLayer(marker));
+            markers = [];
+        }
+
+        // Générer un QR Code pour partager la carte
+        function generateQRCode() {
+            var url = window.location.href;
+            new QRCode(document.getElementById("qrcode"), { text: url, width: 128, height: 128 });
+        }
+
+        generateQRCode(); // Appel au chargement de la page
+    </script>
+</body>
+</html>
